@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="SongSiphera — Apple-grade, high-fidelity local music player with fluid visualizers and parametric equalizer.">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>SongSiphera</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/cookies.js"></script>
+</head>
+<body>
+  <!-- ================================================================= -->
+  <!-- MAIN APPLICATION ROOT CONTAINER                                   -->
+  <!-- data-mood controls the active visual theme & aesthetic aura       -->
+  <!-- data-view controls which main view section is displayed           -->
+  <!-- ================================================================= -->
+  <div id="app" data-mood="default" data-view="home">
+
+    <!-- Fluid Background Canvas (Organic ambient animated backdrop) -->
+    <canvas id="fluid-bg" class="fluid-canvas"></canvas>
+
+    <!-- =============================================================== -->
+    <!-- SIDEBAR NAVIGATION & AURA CONTROLS                              -->
+    <!-- =============================================================== -->
+    <aside id="sidebar" class="sidebar glass">
+      <!-- Sidebar Header & Brand -->
+      <div class="sidebar-header">
+        <button id="sidebar-toggle" class="btn-icon sidebar-toggle-btn" aria-label="Toggle Navigation Menu">
+          <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <div class="sidebar-brand">
+          <div id="app-logo" class="app-logo">
+            <svg viewBox="0 0 28 28" class="svg-logo" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <defs>
+                <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="var(--accent)" />
+                  <stop offset="100%" stop-color="var(--viz-secondary)" />
+                </linearGradient>
+              </defs>
+              <circle cx="14" cy="14" r="12" stroke="url(#logo-grad)" stroke-width="2" stroke-dasharray="60 15" />
+              <path d="M10 18 C10 14, 18 14, 18 10 C18 7.5, 15.5 6, 14 6 C11 6, 9.5 8, 9.5 8" stroke="url(#logo-grad)" stroke-width="2.2" />
+              <circle cx="14" cy="14" r="2.5" fill="var(--accent)" />
+              <path d="M18 10 C18 14, 10 14, 10 18 C10 20.5, 12.5 22, 14 22 C17 22, 18.5 20, 18.5 20" stroke="url(#logo-grad)" stroke-width="2.2" />
+            </svg>
+          </div>
+          <span id="app-name" class="app-name">SongSiphera</span>
+        </div>
+      </div>
+
+      <!-- Main Navigation Links -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Library &amp; Views</div>
+        
+        <button class="nav-item active" data-view="home">
+          <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span class="nav-label">Home</span>
+        </button>
+
+        <button class="nav-item" data-view="library">
+          <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+          <span class="nav-label">Library</span>
+        </button>
+
+        <button class="nav-item" data-view="playlists">
+          <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+          <span class="nav-label">Playlists</span>
+        </button>
+
+        <button class="nav-item" data-view="equalizer">
+          <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          <span class="nav-label">Equalizer</span>
+        </button>
+
+        <button class="nav-item" data-view="visualizer">
+          <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          <span class="nav-label">Visualizer</span>
+        </button>
+
+        <button class="nav-item" data-view="settings">
+          <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span class="nav-label">Settings</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar User Playlists -->
+      <div class="sidebar-playlists-section">
+        <div class="sidebar-section-header">
+          <span class="section-title">Playlists</span>
+          <button id="create-playlist-btn" class="btn-icon btn-sm" aria-label="Create Playlist" title="Create Playlist">
+            <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+        <div id="sidebar-playlist-list" class="sidebar-playlist-list">
+          <!-- Dynamic Playlist Items Injected by SS.playlist -->
+        </div>
+      </div>
+
+      <!-- Mood Profiles Aura Selector -->
+      <div class="sidebar-mood-section">
+        <div class="nav-section-title">Aesthetic Aura</div>
+        <div class="mood-selector-grid">
+          <button class="mood-btn active" data-mood="default" title="Clean Light Theme" aria-label="Default Light Theme">
+            <span class="mood-dot mood-dot-default"></span>
+            <span class="mood-name">Light</span>
+          </button>
+          <button class="mood-btn" data-mood="chaos" title="Bold & Energetic" aria-label="Bold Energetic Theme">
+            <span class="mood-dot mood-dot-chaos"></span>
+            <span class="mood-name">Bold</span>
+          </button>
+          <button class="mood-btn" data-mood="midnight" title="Deep Calm Focus" aria-label="Deep Calm Theme">
+            <span class="mood-dot mood-dot-midnight"></span>
+            <span class="mood-name">Focus</span>
+          </button>
+          <button class="mood-btn" data-mood="retro" title="Warm Vintage Feel" aria-label="Warm Vintage Theme">
+            <span class="mood-dot mood-dot-retro"></span>
+            <span class="mood-name">Vintage</span>
+          </button>
+          <button class="mood-btn" data-mood="pure" title="Minimal Dark Studio" aria-label="Minimal Dark Theme">
+            <span class="mood-dot mood-dot-pure"></span>
+            <span class="mood-name">Studio</span>
+          </button>
+          <button class="mood-btn" data-mood="neon" title="Cyberpunk Glow" aria-label="Cyberpunk Glow Theme">
+            <span class="mood-dot mood-dot-neon"></span>
+            <span class="mood-name">Cyber</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- =============================================================== -->
+    <!-- MAIN CONTENT VIEWPORT CONTAINER                                 -->
+    <!-- =============================================================== -->
+    <main id="main-content" class="main-content">
+      
+      <!-- VIEW 1: HOME SECTION -->
+      <section id="view-home" class="view-section active">
+        <!-- Hero Editorial Banner -->
+        <div id="hero-section" class="hero-banner card">
+          <div class="hero-content">
+            <div class="hero-badge">Featured Listening Experience</div>
+            <h1 class="hero-title">Experience Sound in High Definition</h1>
+            <p class="hero-subtitle">Studio-grade acoustics, 10-band parametric equalisation, and reactive ambient visualisers tailored for your local music collection.</p>
+            <div class="hero-actions">
+              <button class="btn-primary hero-btn-play" onclick="SS.ui.switchView('library')">
+                <svg viewBox="0 0 24 24" class="svg-icon" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Browse Music Library</span>
+              </button>
+              <button class="btn-ghost hero-btn-eq" onclick="SS.ui.switchView('equalizer')">
+                <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line>
+                  <line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line>
+                </svg>
+                <span>Fine-tune EQ</span>
+              </button>
+            </div>
+          </div>
+          <div class="hero-artwork-preview">
+            <div class="hero-glass-disc">
+              <div class="hero-disc-inner"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recently Played Section -->
+        <div class="home-section-block">
+          <div class="section-heading-group">
+            <h2 class="section-heading">Recently Played</h2>
+            <span class="section-subheading">Jump back into your latest audio sessions</span>
+          </div>
+          <div id="recently-played-grid" class="cards-grid">
+            <!-- Dynamically populated or empty placeholder -->
+          </div>
+        </div>
+
+        <!-- Quick Picks Section -->
+        <div class="home-section-block">
+          <div class="section-heading-group">
+            <h2 class="section-heading">Quick Picks</h2>
+            <span class="section-subheading">Hand-selected tracks and playlists from your vault</span>
+          </div>
+          <div id="quick-picks-grid" class="cards-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <footer class="app-footer card glass">
+          <p>Made with ❤️ by <strong>Abhishek Issac</strong> &amp; <strong>Ansal K Joseph</strong> • <a href="https://github.com" target="_blank" rel="noopener">GitHub</a></p>
+        </footer>
+      </section>
+
+      <!-- VIEW 2: LIBRARY SECTION -->
+      <section id="view-library" class="view-section">
+        <!-- Library Control Bar -->
+        <div class="library-header card glass">
+          <div class="search-input-wrapper">
+            <svg viewBox="0 0 24 24" class="search-icon svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="library-search" class="search-input" placeholder="Search by title, artist, or album..." autocomplete="off" spellcheck="false">
+          </div>
+
+          <div class="library-actions">
+            <!-- Hidden File and Directory Inputs -->
+            <input type="file" id="file-input" class="hidden-input" multiple accept="audio/*">
+            <input type="file" id="folder-input" class="hidden-input" webkitdirectory directory multiple>
+
+            <button id="add-files-btn" class="btn-primary" aria-label="Add Audio Files">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              <span>Add Files</span>
+            </button>
+
+            <button id="add-folder-btn" class="btn-ghost" aria-label="Add Audio Folder">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                <line x1="12" y1="11" x2="12" y2="17"></line>
+                <line x1="9" y1="14" x2="15" y2="14"></line>
+              </svg>
+              <span>Add Folder</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Library Grid / Track List Container -->
+        <div id="library-grid" class="library-grid">
+          <!-- Track items rendered here -->
+        </div>
+
+        <!-- Empty State Container -->
+        <div id="library-empty" class="library-empty-state">
+          <div class="empty-icon-wrapper">
+            <svg viewBox="0 0 24 24" class="empty-svg" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9 17V7l7-2v10"></path>
+              <circle cx="9" cy="17" r="2.5"></circle>
+              <circle cx="16" cy="15" r="2.5"></circle>
+            </svg>
+          </div>
+          <h2 class="empty-title">Your Library is Silent</h2>
+          <p class="empty-subtitle">Add audio files or complete music directories from your local storage to get started with lossless streaming.</p>
+          <div class="empty-actions">
+            <button class="btn-primary" onclick="document.getElementById('file-input').click()">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Select Audio Files</span>
+            </button>
+            <button class="btn-ghost" onclick="document.getElementById('folder-input').click()">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+              <span>Scan Directory</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Drag & Drop Overlay for Library -->
+        <div id="drop-zone" class="drop-zone-overlay">
+          <div class="drop-zone-content card glass">
+            <div class="drop-icon-animated">
+              <svg viewBox="0 0 24 24" class="svg-drop" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+            </div>
+            <h3 class="drop-title">Drop Tracks into SongSiphera</h3>
+            <p class="drop-subtitle">Release files or whole folders to instantly analyze metadata and embed artwork</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: PLAYLISTS SECTION -->
+      <section id="view-playlists" class="view-section">
+        <!-- Playlists Overview Grid -->
+        <div class="playlists-view-header">
+          <div>
+            <h1 class="view-title">Playlists</h1>
+            <p class="view-subtitle">Organize and curate your sonic journeys</p>
+          </div>
+          <button class="btn-primary" onclick="SS.ui.showModal('modal-create-playlist')">
+            <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Create Playlist</span>
+          </button>
+        </div>
+
+        <div id="playlists-grid" class="playlists-grid">
+          <!-- Dynamic playlist cards -->
+        </div>
+
+        <!-- Single Playlist Detail View (Hidden by default) -->
+        <div id="playlist-detail" class="playlist-detail hidden">
+          <div class="playlist-detail-header card glass">
+            <button id="playlist-detail-back" class="btn-icon btn-back" aria-label="Back to playlists">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <div class="playlist-detail-cover">
+              <svg viewBox="0 0 24 24" class="svg-cover-fallback" fill="none" stroke="currentColor" stroke-width="1.5">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+            </div>
+            <div class="playlist-detail-meta">
+              <span class="detail-label">Curated Playlist</span>
+              <h2 id="playlist-detail-name" class="playlist-detail-title">Playlist Name</h2>
+              <p id="playlist-detail-desc" class="playlist-detail-description">Description of playlist</p>
+              <div class="playlist-detail-actions">
+                <button id="playlist-play-all-btn" class="btn-primary">
+                  <svg viewBox="0 0 24 24" class="svg-icon" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                  <span>Play All</span>
+                </button>
+                <button id="playlist-delete-btn" class="btn-ghost btn-danger-ghost">
+                  <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                  <span>Delete Playlist</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="playlist-detail-tracks" class="playlist-tracks-list">
+            <!-- Tracks list inside playlist -->
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: EQUALIZER SECTION -->
+      <section id="view-equalizer" class="view-section">
+        <div class="eq-view-container card glass">
+          <div class="eq-header">
+            <div>
+              <h1 class="view-title">Parametric Equalizer</h1>
+              <p class="view-subtitle">10-band precision biquad peaking filters with real-time spectrum feedback</p>
+            </div>
+
+            <!-- EQ Preset Select -->
+            <div class="eq-preset-wrapper">
+              <label for="eq-preset-select" class="eq-control-label">Acoustic Profile</label>
+              <div class="custom-select-wrap">
+                <select id="eq-preset-select" class="eq-select">
+                  <option value="flat">Flat (Reference)</option>
+                  <option value="bass-boost">Bass Boost</option>
+                  <option value="treble-boost">Treble Boost</option>
+                  <option value="vocal">Vocal Enhance</option>
+                  <option value="rock">Rock</option>
+                  <option value="pop">Pop</option>
+                  <option value="jazz">Jazz</option>
+                  <option value="classical">Classical</option>
+                  <option value="electronic">Electronic</option>
+                  <option value="acoustic">Acoustic</option>
+                  <option value="hip-hop">Hip-Hop</option>
+                  <option value="r-and-b">R&amp;B</option>
+                  <option value="latin">Latin</option>
+                  <option value="podcast">Podcast / Spoken</option>
+                  <option value="chaos-vshape">Chaos V-Shape</option>
+                  <option value="midnight-warm">Midnight Warm</option>
+                  <option value="retro-vinyl">Retro Vinyl</option>
+                  <option value="pure-flat">Pure Flat Reference</option>
+                  <option value="neon-bass">Neon Cyber Bass</option>
+                </select>
+                <svg viewBox="0 0 24 24" class="select-chevron svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mini Visualizer Spectrum Display in EQ view -->
+          <div class="eq-viz-mini-container">
+            <canvas id="eq-viz-mini" class="eq-viz-canvas" height="120"></canvas>
+            <div class="eq-viz-grid-lines">
+              <span class="db-marker">+12 dB</span>
+              <span class="db-marker">0 dB</span>
+              <span class="db-marker">-12 dB</span>
+            </div>
+          </div>
+
+          <!-- 10 Band Vertical Sliders -->
+          <div id="eq-sliders" class="eq-bands-rack">
+            <!-- 32 Hz -->
+            <div class="eq-band" data-freq="32">
+              <div class="eq-value">+0.0</div>
+              <div class="eq-slider-slot">
+                <input type="range" min="-12" max="12" step="0.5" value="0" orient="vertical" aria-label="Equalizer 32 Hertz">
+              </div>
+              <div class="eq-label">32 Hz</div>
+            </div>
+
+            <!-- 64 Hz -->
+            <div class="eq-band" data-freq="64">
+              <div class="eq-value">+0.0</div>
+              <div class="eq-slider-slot">
+                <input type="range" min="-12" max="12" step="0.5" value="0" orient="vertical" aria-label="Equalizer 64 Hertz">
+              </div>
+              <div class="eq-label">64 Hz</div>
+            </div>
+
+            <!-- 125 Hz -->
+            <div class="eq-band" data-freq="125">
+              <div class="eq-value">+0.0</div>
+              <div class="eq-slider-slot">
+                <input type="range" min="-12" max="12" step="0.5" value="0" orient="vertical" aria-label="Equalizer 125 Hertz">
+              </div>
+              <div class="eq-label">125 Hz</div>
+            </div>
+
+            <!-- 250 Hz -->
+            <div class="eq-band" data-freq="250">
+              <div class="eq-value">+0.0</div>
+              <div class="eq-slider-slot">
+                <input type="range" min="-12" max="12" step="0.5" value="0" orient="vertical" aria-label="Equalizer 250 Hertz">
+              </div>
+              <div class="eq-label">250 Hz</div>
+            </div>
+
+            <!-- 500 Hz -->
+            <div class="eq-band" data-freq="500">
+              <div class="eq-value">+0.0</div>
+              <div class="eq-slider-slot">
+                <input type="range" min="-12" max="12" step="0.5" value="0" orient="vertical" aria-label="Equalizer 500 Hertz">
+              </div>
+              <div class="eq-label">500 Hz</div>
+            </div>
+
+            <!-- 1000 Hz -->
+            <div class="eq-band" data-freq="1000">
+              <div class="eq-value">+0.0</div>
+              <div class="eq-slider-slot">
+                <input type="range" min="-12" max="12" step="0.5" value="0" orient="vertical" aria-label="Equalizer 1 Kilohertz">
+              </div>
+              <div class="eq-label">1 kHz</div>
+            </div>
+
+            <!-- 2000 Hz -->
+            <div class="eq-band" data-freq="2000">
+              <div class="eq-value">+0.0</div>
+              <div class="eq-slider-slot">
+                <input type="range" min="-12" max="12" step="0.5" value="0" orient="vertical" aria-label="Equalizer 2 Kilohertz">
+              </div>
+              <div class="eq-label">2 kHz</div>
+            </div>
+
+            <!-- 4000 Hz -->
+            <div class="eq-band" data-freq="4000">
+              <div class="eq-value">+0.0</div>
+              <div class="eq-slider-slot">
+                <input type="range" min="-12" max="12" step="0.5" value="0" orient="vertical" aria-label="Equalizer 4 Kilohertz">
+              </div>
+              <div class="eq-label">4 kHz</div>
+            </div>
+
+            <!-- 8000 Hz -->
+            <div class="eq-band" data-freq="8000">
+              <div class="eq-value">+0.0</div>
+              <div class="eq-slider-slot">
+                <input type="range" min="-12" max="12" step="0.5" value="0" orient="vertical" aria-label="Equalizer 8 Kilohertz">
+              </div>
+              <div class="eq-label">8 kHz</div>
+            </div>
+
+            <!-- 16000 Hz -->
+            <div class="eq-band" data-freq="16000">
+              <div class="eq-value">+0.0</div>
+              <div class="eq-slider-slot">
+                <input type="range" min="-12" max="12" step="0.5" value="0" orient="vertical" aria-label="Equalizer 16 Kilohertz">
+              </div>
+              <div class="eq-label">16 kHz</div>
+            </div>
+          </div>
+
+          <!-- Secondary Audio Enhancements (Bass Boost & Intensity) -->
+          <div class="eq-extra-controls">
+            <div class="extra-control-card card">
+              <div class="control-header">
+                <span class="control-name">Sub-Bass Drive</span>
+                <span id="bass-boost-value" class="control-val">0%</span>
+              </div>
+              <input type="range" id="bass-boost-slider" min="0" max="100" value="0" class="control-slider">
+              <span class="control-hint">Harmonic low-frequency excitation</span>
+            </div>
+
+            <div class="extra-control-card card">
+              <div class="control-header">
+                <span class="control-name">EQ Intensity Scale</span>
+                <span id="intensity-value" class="control-val">100%</span>
+              </div>
+              <input type="range" id="intensity-slider" min="0" max="100" value="100" class="control-slider">
+              <span class="control-hint">Overall parametric curve amplification</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 5: VISUALIZER SECTION -->
+      <section id="view-visualizer" class="view-section">
+        <div class="visualizer-container">
+          <canvas id="visualizer-canvas" class="visualizer-canvas"></canvas>
+
+          <!-- Floating Mode Controls Overlay -->
+          <div id="viz-mode-select" class="viz-mode-overlay glass">
+            <button class="viz-mode-btn active" data-mode="bars" title="Spectrum Bars">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="6" y1="20" x2="6" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="18" y1="20" x2="18" y2="14"></line>
+              </svg>
+              <span>Bars</span>
+            </button>
+
+            <button class="viz-mode-btn" data-mode="wave" title="Oscilloscope Wave">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 12s3-7 7-7 7 14 7 14 3-7 6-7"></path>
+              </svg>
+              <span>Wave</span>
+            </button>
+
+            <button class="viz-mode-btn" data-mode="circular" title="Circular Spectrum">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9"></circle>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>Circular</span>
+            </button>
+
+            <button class="viz-mode-btn" data-mode="particles" title="Reactive Particle Swarm">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="5" cy="6" r="1.5" fill="currentColor"></circle>
+                <circle cx="12" cy="4" r="1.5" fill="currentColor"></circle>
+                <circle cx="19" cy="7" r="1.5" fill="currentColor"></circle>
+                <circle cx="7" cy="15" r="1.5" fill="currentColor"></circle>
+                <circle cx="16" cy="14" r="1.5" fill="currentColor"></circle>
+                <circle cx="12" cy="19" r="1.5" fill="currentColor"></circle>
+              </svg>
+              <span>Particles</span>
+            </button>
+
+            <button class="viz-mode-btn" data-mode="galaxy" title="Spiral Galaxy Field">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="2" fill="currentColor"></circle>
+                <path d="M12 2a10 10 0 0 0-9.8 8.2c-.4 2.2.3 4.5 1.8 6.1s3.8 2.3 6 1.8c2.2-.4 4-2.1 4.5-4.2"></path>
+              </svg>
+              <span>Galaxy</span>
+            </button>
+
+            <button class="viz-mode-btn" data-mode="terrain" title="Retro 3D Synthwave Mesh">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="1 20 8 9 13 15 17 8 23 20 1 20"></polygon>
+              </svg>
+              <span>Terrain</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 6: SETTINGS SECTION -->
+      <section id="view-settings" class="view-section">
+        <div class="view-header">
+          <h1 class="view-title">Settings &amp; Preferences</h1>
+          <p class="view-subtitle">Fine-tune acoustic rendering, caching, and visual performance</p>
+        </div>
+
+        <div id="settings-container" class="settings-grid">
+          <!-- Audio Rendering Engine Preferences -->
+          <div class="settings-group card glass">
+            <h3 class="settings-group-title">Audio Processing Engine</h3>
+            
+            <div class="setting-row">
+              <div class="setting-meta">
+                <span class="setting-title">Auto Normalization</span>
+                <span class="setting-desc">Smooth perceived loudness differences across tracks</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-normalization" checked>
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-meta">
+                <span class="setting-title">Audio Crossfade</span>
+                <span class="setting-desc">Gapless transition between queue tracks (seconds)</span>
+              </div>
+              <input type="range" id="setting-crossfade" min="0" max="6" step="0.5" value="1" class="setting-slider">
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-meta">
+                <span class="setting-title">FFT Sample Resolution</span>
+                <span class="setting-desc">Fast Fourier Transform frequency bin resolution</span>
+              </div>
+              <select id="setting-fft-size" class="setting-select">
+                <option value="256">256 bins (Ultra Fast)</option>
+                <option value="512" selected>512 bins (Balanced)</option>
+                <option value="1024">1024 bins (Precision)</option>
+                <option value="2048">2048 bins (Audiophile)</option>
+              </select>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-meta">
+                <span class="setting-title">Sleep Timer</span>
+                <span class="setting-desc">Automatically pause playback with gentle 30s fade</span>
+              </div>
+              <select id="setting-sleep-timer" class="setting-select">
+                <option value="0" selected>Off</option>
+                <option value="15">15 Minutes</option>
+                <option value="30">30 Minutes</option>
+                <option value="45">45 Minutes</option>
+                <option value="60">60 Minutes</option>
+                <option value="track">End of Track</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Visuals & Animation Preferences -->
+          <div class="settings-group card glass">
+            <h3 class="settings-group-title">Visuals &amp; Graphics</h3>
+
+            <div class="setting-row">
+              <div class="setting-meta">
+                <span class="setting-title">Dynamic Fluid Background</span>
+                <span class="setting-desc">Extract ambient colors from album art in real-time</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-fluid-bg" checked>
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-meta">
+                <span class="setting-title">Visualizer Target FPS</span>
+                <span class="setting-desc">Maximum frame rate for canvas animations</span>
+              </div>
+              <select id="setting-fps-limit" class="setting-select">
+                <option value="30">30 FPS (Power Saver)</option>
+                <option value="60" selected>60 FPS (Native Smooth)</option>
+                <option value="120">120 FPS (High Refresh Pro)</option>
+              </select>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-meta">
+                <span class="setting-title">Reduced Motion</span>
+                <span class="setting-desc">Disable screen shakes and heavy spring dynamics</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-reduced-motion">
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Storage & Database Info -->
+          <div class="settings-group card glass">
+            <h3 class="settings-group-title">Local Storage &amp; Cache</h3>
+            
+            <div class="setting-row">
+              <div class="setting-meta">
+                <span class="setting-title">Indexed Music Library Meta</span>
+                <span id="storage-library-count" class="setting-desc">0 tracks indexed</span>
+              </div>
+              <button id="btn-clear-library" class="btn-ghost btn-danger-ghost">Clear Library</button>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-meta">
+                <span class="setting-title">Reset All Settings</span>
+                <span class="setting-desc">Restore EQ presets, aura profiles, and volume defaults</span>
+              </div>
+              <button id="btn-reset-settings" class="btn-ghost">Reset Defaults</button>
+            </div>
+          </div>
+
+          <!-- Cookies & First-Paint Parity Info (Part 7) -->
+          <div class="settings-group card glass">
+            <h3 class="settings-group-title">Cookies &amp; State Hydration</h3>
+            <p class="setting-desc" style="margin-bottom: 12px;">First-party functional cookies (RFC 6265) store instant profile, theme, volume, and device sync attributes so the browser boots with zero layout shift.</p>
+            
+            <div class="setting-row">
+              <div class="setting-meta">
+                <span class="setting-title">Anonymous Client Device ID</span>
+                <span id="cookie-client-id" class="setting-desc" style="font-family: var(--font-mono); word-break: break-all;">Generating...</span>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-meta">
+                <span class="setting-title">Active Cookies Cached</span>
+                <span id="cookie-active-count" class="setting-desc">0 active cookies</span>
+              </div>
+              <button id="btn-clear-cookies" class="btn-ghost btn-danger-ghost">Clear Cookies</button>
+            </div>
+          </div>
+
+          <!-- Shortcuts & About Info -->
+          <div class="settings-group card glass">
+            <h3 class="settings-group-title">About SongSiphera</h3>
+            <p class="setting-desc" style="margin-bottom: 12px;">Crafted with pure Web Audio API, Canvas 2D, and CSS Glass Morphism. Zero CDNs, zero telemetry, 100% private client-side audio player.</p>
+            <div class="shortcuts-legend">
+              <div class="shortcut-item"><kbd>Space</kbd> <span>Play / Pause</span></div>
+              <div class="shortcut-item"><kbd>J</kbd> / <kbd>L</kbd> <span>Previous / Next</span></div>
+              <div class="shortcut-item"><kbd>M</kbd> <span>Mute / Unmute</span></div>
+              <div class="shortcut-item"><kbd>F</kbd> <span>Expand Now Playing</span></div>
+              <div class="shortcut-item"><kbd>Q</kbd> <span>Toggle Queue</span></div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="app-footer card glass">
+          <p>Made with ❤️ by <strong>Abhishek Issac</strong> &amp; <strong>Ansal K Joseph</strong> • <a href="https://github.com" target="_blank" rel="noopener">GitHub</a></p>
+        </footer>
+      </section>
+
+    </main>
+
+    <!-- =============================================================== -->
+    <!-- NOW PLAYING BAR (Always visible at screen bottom)                -->
+    <!-- =============================================================== -->
+    <div id="now-playing-bar" class="now-playing-bar glass">
+      <!-- Thin Progress Bar along top border of player bar -->
+      <div id="np-progress-track" class="np-progress-track" aria-label="Seek track position">
+        <div id="np-progress-fill" class="np-progress-fill"></div>
+      </div>
+
+      <div class="np-bar-content">
+        <!-- Left: Mini Track Information & Thumbnail -->
+        <div class="np-meta-mini" onclick="SS.ui.expandNowPlaying()" title="Expand Now Playing">
+          <div class="artwork-thumb-container">
+            <img id="np-artwork-mini" class="np-artwork-img" alt="Track Artwork" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' fill='%23888' viewBox='0 0 24 24'%3E%3Cpath d='M9 18V5l12-2v13'/%3E%3Ccircle cx='6' cy='18' r='3'/%3E%3Ccircle cx='18' cy='16' r='3'/%3E%3C/svg%3E">
+            <div class="artwork-hover-overlay">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="18 15 12 9 6 15"></polyline>
+              </svg>
+            </div>
+          </div>
+          <div class="np-text-mini">
+            <div id="np-title-mini" class="np-title-text">Not Playing</div>
+            <div id="np-artist-mini" class="np-artist-text">Select a track from your library</div>
+          </div>
+        </div>
+
+        <!-- Center: Primary Playback Controls -->
+        <div class="np-controls-mini">
+          <button id="btn-prev" class="btn-icon np-btn" aria-label="Previous Track" title="Previous Track (J)">
+            <svg viewBox="0 0 24 24" class="svg-icon" fill="currentColor">
+              <polygon points="19 20 9 12 19 4 19 20"></polygon>
+              <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></line>
+            </svg>
+          </button>
+
+          <button id="btn-play-pause" class="btn-icon btn-play-pause-main" aria-label="Play or Pause" title="Play / Pause (Space)">
+            <!-- Dynamic SVG icon swapped via JS/CSS -->
+            <svg class="svg-play" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="6 4 20 12 6 20 6 4"></polygon>
+            </svg>
+            <svg class="svg-pause hidden" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="6" y="4" width="4" height="16" rx="1.5"></rect>
+              <rect x="14" y="4" width="4" height="16" rx="1.5"></rect>
+            </svg>
+          </button>
+
+          <button id="btn-next" class="btn-icon np-btn" aria-label="Next Track" title="Next Track (L)">
+            <svg viewBox="0 0 24 24" class="svg-icon" fill="currentColor">
+              <polygon points="5 4 15 12 5 20 5 4"></polygon>
+              <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></line>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Right: Utility Controls (Volume & Queue) -->
+        <div class="np-extras-mini">
+          <!-- Volume Control Group -->
+          <div class="volume-control-wrapper">
+            <button id="btn-volume-toggle" class="btn-icon np-btn" aria-label="Toggle Mute" title="Toggle Volume">
+              <svg id="volume-icon" viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
+            </button>
+            <div id="volume-slider-container" class="volume-slider-container">
+              <input type="range" id="volume-slider" class="volume-slider-input" min="0" max="1" step="0.01" value="0.8" aria-label="Master Volume">
+            </div>
+          </div>
+
+          <!-- Queue Toggle Button -->
+          <button id="btn-queue-toggle" class="btn-icon np-btn" aria-label="Toggle Play Queue" title="Queue (Q)">
+            <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="8" y1="6" x2="21" y2="6"></line>
+              <line x1="8" y1="12" x2="21" y2="12"></line>
+              <line x1="8" y1="18" x2="21" y2="18"></line>
+              <polyline points="3 6 4 7 6 5"></polyline>
+              <circle cx="4" cy="12" r="1" fill="currentColor"></circle>
+              <circle cx="4" cy="18" r="1" fill="currentColor"></circle>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- NOW PLAYING FULL SCREEN EXPANDED OVERLAY                        -->
+    <!-- =============================================================== -->
+    <div id="now-playing-full" class="now-playing-full hidden">
+      <!-- Full Backdrop with dynamic artwork blur -->
+      <div id="np-full-bg" class="np-full-backdrop"></div>
+
+      <!-- Top Full Overlay Navigation Header -->
+      <div class="np-full-header">
+        <button id="np-full-close" class="btn-icon btn-close-full" aria-label="Collapse Now Playing">
+          <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+
+        <div class="np-full-header-title">
+          <span class="full-header-eyebrow">Playing from Library</span>
+          <span class="full-header-label">Now Playing</span>
+        </div>
+
+        <div class="np-full-header-actions">
+          <button id="btn-tv-fullscreen" class="btn-icon" aria-label="TV Fullscreen Mode" title="TV Fullscreen Mode">
+            <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+          </button>
+          <button id="btn-sleep-timer" class="btn-icon" aria-label="Sleep Timer" title="Sleep Timer">
+            <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+          <button id="btn-more-full" class="btn-icon" aria-label="Track Options" title="More Options">
+            <svg viewBox="0 0 24 24" class="svg-icon" fill="currentColor">
+              <circle cx="12" cy="12" r="2"></circle>
+              <circle cx="19" cy="12" r="2"></circle>
+              <circle cx="5" cy="12" r="2"></circle>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Full Body Layout (Artwork, Info, Controls, Visualizer) -->
+      <div class="np-full-body">
+        <!-- Artwork Column / Card -->
+        <div class="np-artwork-full-container">
+          <div class="artwork-full-shadow-box">
+            <img id="np-artwork-full" class="np-artwork-full-img" alt="Current Album Art" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' fill='%23777' viewBox='0 0 24 24'%3E%3Cpath d='M9 18V5l12-2v13'/%3E%3Ccircle cx='6' cy='18' r='3'/%3E%3Ccircle cx='18' cy='16' r='3'/%3E%3C/svg%3E">
+            <!-- Mini Visualizer Overlay within Artwork Area -->
+            <canvas id="np-mini-viz" class="np-mini-viz-canvas" height="60"></canvas>
+          </div>
+          <!-- Compact Lyrics Strip — sits right under the album art cover -->
+          <div id="np-lyrics-compact" class="lyrics-compact-strip hidden">
+            <div id="lyrics-compact-lines" class="lyrics-compact-lines"></div>
+          </div>
+        </div>
+
+        <!-- Meta, Seekbar & Controls Column -->
+        <div class="np-details-full-container">
+          <!-- Track Titles & Artist -->
+          <div class="np-titles-full">
+            <h1 id="np-title-full" class="np-title-large">No Track Loaded</h1>
+            <div class="np-artists-wrap">
+              <span id="np-artist-full" class="np-artist-large">Select Music to Begin</span>
+              <span class="np-bullet">•</span>
+              <span id="np-album-full" class="np-album-large">SongSiphera</span>
+            </div>
+          </div>
+
+          <!-- Sound Information Badges & Live Telemetry -->
+          <div id="np-sound-info" class="np-sound-info-bar">
+            <span id="info-format" class="sound-badge">FLAC</span>
+            <span id="info-bitrate" class="sound-badge">1411 kbps</span>
+            <span id="info-samplerate" class="sound-badge">44.1 kHz / 24-bit</span>
+            <span id="info-live-bass" class="sound-badge sound-badge-accent" title="Live Bass Energy Percentage">Bass: 0%</span>
+            <span id="info-headroom" class="sound-badge" title="Signal Headroom">-0.0 dB Safe</span>
+            <span id="info-bpm" class="sound-badge" title="Detected BPM">-- BPM</span>
+            <span id="info-note" class="sound-badge" title="Dominant Pitch">Key: --</span>
+          </div>
+
+          <!-- Real-Time Bass Level Meter & Ratio Readout -->
+          <div class="bass-meter-container">
+            <div class="bass-meter-header">
+              <span class="bass-meter-label">Sub-Bass Drive</span>
+              <span id="bass-meter-stats" class="bass-meter-stats">Energy: 0% · Boost: 0%</span>
+            </div>
+            <div id="bass-meter" class="bass-meter-track">
+              <div id="bass-meter-fill" class="bass-meter-fill"></div>
+            </div>
+          </div>
+
+          <!-- Active DSP Signal Flow Strip -->
+          <div id="signal-path-strip" class="signal-path-strip" title="Acoustic Signal Processing Chain">
+            <span class="path-node active">Source</span>
+            <span class="path-arrow">→</span>
+            <span id="signal-eq" class="path-node">EQ</span>
+            <span class="path-arrow">→</span>
+            <span id="signal-bass" class="path-node">Bass Exciter</span>
+            <span class="path-arrow">→</span>
+            <span class="path-node active">Limiter</span>
+            <span class="path-arrow">→</span>
+            <span id="output-device-badge" class="path-node active output-device-selector" title="Click to Change Audio Output">Output</span>
+          </div>
+
+          <!-- Scrubbing Progress Bar & Timestamps -->
+          <div class="np-seek-wrapper">
+            <div id="np-progress-full" class="np-progress-full-track" role="slider" aria-label="Playback seek position" tabindex="0">
+              <div id="np-progress-fill-full" class="np-progress-fill-full">
+                <span class="progress-thumb-knob"></span>
+              </div>
+            </div>
+            <div class="np-time-indicators">
+              <span id="np-time-current" class="time-stamp">0:00</span>
+              <span id="np-time-total" class="time-stamp">0:00</span>
+            </div>
+          </div>
+
+          <!-- Master Control Buttons -->
+          <div class="np-controls-large">
+            <button id="btn-shuffle" class="btn-icon np-control-sub" aria-label="Shuffle Queue" title="Shuffle">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 3 21 3 21 8"></polyline>
+                <line x1="4" y1="20" x2="21" y2="3"></line>
+                <polyline points="21 16 21 21 16 21"></polyline>
+                <line x1="15" y1="15" x2="21" y2="21"></line>
+                <line x1="4" y1="4" x2="9" y2="9"></line>
+              </svg>
+            </button>
+
+            <button id="btn-prev-full" class="btn-icon np-control-nav" aria-label="Previous Track" title="Previous Track">
+              <svg viewBox="0 0 24 24" class="svg-icon-large" fill="currentColor">
+                <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="3" stroke-linecap="round"></line>
+              </svg>
+            </button>
+
+            <button id="btn-play-pause-full" class="btn-icon np-control-play-pause" aria-label="Play or Pause" title="Play / Pause">
+              <svg class="svg-play-large" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="6 4 20 12 6 20 6 4"></polygon>
+              </svg>
+              <svg class="svg-pause-large hidden" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="5" y="4" width="4.5" height="16" rx="2"></rect>
+                <rect x="14.5" y="4" width="4.5" height="16" rx="2"></rect>
+              </svg>
+            </button>
+
+            <button id="btn-next-full" class="btn-icon np-control-nav" aria-label="Next Track" title="Next Track">
+              <svg viewBox="0 0 24 24" class="svg-icon-large" fill="currentColor">
+                <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="3" stroke-linecap="round"></line>
+              </svg>
+            </button>
+
+            <button id="btn-repeat" class="btn-icon np-control-sub" aria-label="Toggle Repeat Mode" title="Repeat (Off / All / One)">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="17 1 21 5 17 9"></polyline>
+                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                <polyline points="7 23 3 19 7 15"></polyline>
+                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Bottom Utility Shortcuts Bar -->
+          <div class="np-bottom-utilities">
+            <button id="btn-lyrics-toggle" class="btn-icon util-btn" aria-label="Toggle Lyrics" title="Synchronized Lyrics">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                <line x1="8" y1="9" x2="16" y2="9"></line>
+                <line x1="8" y1="13" x2="14" y2="13"></line>
+              </svg>
+            </button>
+
+            <button id="btn-eq-quick" class="btn-icon util-btn" aria-label="Quick Equalizer" title="Equalizer Rack">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line>
+                <line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line>
+              </svg>
+            </button>
+
+            <button id="btn-viz-toggle" class="btn-icon util-btn" aria-label="Toggle Visualizer Mode" title="Fullscreen Visualizer">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+            </button>
+
+            <button id="btn-queue-full" class="btn-icon util-btn" aria-label="Open Queue Panel" title="Play Queue">
+              <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compact Lyrics (rendered via SS.lyrics into #np-lyrics-compact above) -->
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- SLIDE-IN QUEUE DRAWER PANEL (From Right)                        -->
+    <!-- =============================================================== -->
+    <div id="queue-panel" class="queue-panel glass">
+      <div class="queue-header">
+        <div>
+          <h2 class="queue-title">Playing Queue</h2>
+          <span class="queue-subtitle">Upcoming audio queue</span>
+        </div>
+        <div class="queue-header-actions">
+          <button id="queue-clear" class="btn-ghost btn-sm" title="Clear all queued tracks">Clear</button>
+          <button id="queue-panel-close" class="btn-icon btn-sm" aria-label="Close Queue Panel">
+            <svg viewBox="0 0 24 24" class="svg-icon" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Queue Items Container -->
+      <div id="queue-list" class="queue-list">
+        <!-- Rendered items with format:
+             <div class="queue-item" data-index="0">
+               <div class="queue-drag-handle">...</div>
+               <img class="queue-art" ... />
+               <div class="queue-info">...</div>
+               <button class="queue-remove">...</button>
+             </div>
+        -->
+      </div>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- POPUP CONTEXT MENU                                              -->
+    <!-- =============================================================== -->
+    <div id="context-menu" class="context-menu hidden glass">
+      <div id="context-menu-items" class="context-menu-items">
+        <!-- Dynamic actions injected by SS.ui.showContextMenu -->
+      </div>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- FLOATING TOAST NOTIFICATION STACK                               -->
+    <!-- =============================================================== -->
+    <div id="toast-container" class="toast-container">
+      <!-- Toast cards rendered dynamically -->
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- MODAL OVERLAY & DIALOGS                                         -->
+    <!-- =============================================================== -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+      <!-- Create Playlist Modal -->
+      <div id="modal-create-playlist" class="modal-card card glass">
+        <div class="modal-header">
+          <h2 class="modal-title">New Playlist</h2>
+          <p class="modal-subtitle">Create a custom playlist to curate your local tracks</p>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="modal-playlist-name" class="form-label">Playlist Title</label>
+            <input type="text" id="modal-playlist-name" class="form-input" placeholder="e.g. Late Night Acoustic" autocomplete="off" maxlength="60">
+          </div>
+          <div class="form-group">
+            <label for="modal-playlist-desc" class="form-label">Description (Optional)</label>
+            <textarea id="modal-playlist-desc" class="form-textarea" placeholder="Describe the vibe or track selection..." rows="3" maxlength="200"></textarea>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button id="modal-playlist-cancel" class="btn-ghost">Cancel</button>
+          <button id="modal-playlist-submit" class="btn-primary">Create</button>
+        </div>
+      </div>
+
+      <!-- Sleep Timer Modal -->
+      <div id="modal-sleep-timer" class="modal-card card glass hidden">
+        <div class="modal-header">
+          <h2 class="modal-title">Sleep Timer</h2>
+          <p class="modal-subtitle">Automatically fades playback out with a gentle 30-second exponential curve</p>
+        </div>
+        <div class="modal-body">
+          <div class="sleep-timer-options-grid">
+            <button class="btn-ghost sleep-opt-btn" data-sleep="0">Turn Off</button>
+            <button class="btn-ghost sleep-opt-btn" data-sleep="15">15 Minutes</button>
+            <button class="btn-ghost sleep-opt-btn" data-sleep="30">30 Minutes</button>
+            <button class="btn-ghost sleep-opt-btn" data-sleep="45">45 Minutes</button>
+            <button class="btn-ghost sleep-opt-btn" data-sleep="60">60 Minutes</button>
+            <button class="btn-ghost sleep-opt-btn" data-sleep="track">End of Track</button>
+          </div>
+          <div id="sleep-timer-status" class="sleep-timer-status">Timer is inactive</div>
+        </div>
+        <div class="modal-actions">
+          <button id="modal-sleep-close" class="btn-primary">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden Native Audio Element used by SS.audioEngine -->
+    <audio id="audio-element" preload="auto" class="hidden-audio"></audio>
+
+  </div><!-- /#app -->
+
+  <!-- ================================================================= -->
+  <!-- SCRIPT TAGS (LOAD ORDER AS SPECIFIED IN ARCHITECTURE.MD)          -->
+  <!-- ================================================================= -->
+  <script src="js/cookies.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/audio-engine.js"></script>
+  <script src="js/equalizer.js"></script>
+  <script src="js/visualizer.js"></script>
+  <script src="js/fluid-bg.js"></script>
+  <script src="js/lyrics.js"></script>
+  <script src="js/playlist.js"></script>
+  <script src="js/queue.js"></script>
+  <script src="js/themes.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
